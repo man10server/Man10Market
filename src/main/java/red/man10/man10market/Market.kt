@@ -216,7 +216,7 @@ object Market {
                 val tradeAmount = if (firstOrder.lot > remainAmount) remainAmount else firstOrder.lot
 
                 if (!Man10Market.vault.withdraw(p,tradeAmount * firstOrder.price)){
-                    msg(p, "§c§ld§n電子マネー§c§ldの残高が足りません！")
+                    msg(p, "§c§l§n電子マネー§c§lの残高が足りません！")
                     return@add
                 }
 

@@ -1,5 +1,6 @@
 package red.man10.man10market
 
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import red.man10.man10bank.BankAPI
 import red.man10.man10bank.service.VaultManager
@@ -50,12 +51,15 @@ class Man10Market : JavaPlugin() {
 
     override fun onEnable() {
         // Plugin startup logic
-
         saveDefaultConfig()
 
         instance = this
         bankAPI = BankAPI(this)
         vault = VaultManager(this)
+
+        if (!vault.hook()) {
+            throw Exception("Vaultが入っていません")
+        }
 
         getCommand("mce")!!.setExecutor(Command)
         getCommand("mstock")!!.setExecutor(Stock)
