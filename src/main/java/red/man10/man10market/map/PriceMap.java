@@ -9,12 +9,15 @@ import red.man10.man10market.Market;
 import red.man10.man10market.Util;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PriceMap {
 
+    private static Font baseFont;
 
     //価格情報のキャッシュ
     private static final Map<Integer, Market.PriceData> priceCache = new HashMap<>();
@@ -34,6 +37,7 @@ public class PriceMap {
     }
 
     public static void registerPriceMap() {
+        loadFont(Man10Market.instance);
 
         Bukkit.getLogger().info("Priceマップ登録");
 
@@ -87,7 +91,7 @@ public class PriceMap {
 
         int titleSize = 13;
 
-        g.setFont(new Font(Font.DIALOG, Font.BOLD, titleSize));
+        g.setFont(baseFont.deriveFont(Font.BOLD, titleSize));
 
         MappDraw.drawShadowString(g, item, Color.WHITE, Color.BLACK, 5, 20);
 
@@ -97,7 +101,6 @@ public class PriceMap {
 
         return true;
     }
-
 
     //      現在値を表示
     static boolean drawPrice(Graphics2D g, String item,int id) {
@@ -126,17 +129,13 @@ public class PriceMap {
             titleSize = 12;
         }
 
-        g.setFont(new Font(Font.DIALOG, Font.BOLD, titleSize));
+        g.setFont(baseFont.deriveFont(Font.BOLD, titleSize));
 
         MappDraw.drawShadowString(g, item, Color.WHITE, Color.BLACK, 5, 20);
 
-        g.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
+        g.setFont(baseFont.deriveFont(Font.BOLD, 20));
 
         String strPrice = Util.INSTANCE.format(price.getPrice(), 0);
-
-
-//        g.setColor(Color.YELLOW);
-//        g.drawString(strPrice,10,50);
 
         if (price.getBid() == 0 || price.getAsk() == Double.MAX_VALUE) {
             strPrice = "仲直未定";
@@ -145,12 +144,12 @@ public class PriceMap {
         MappDraw.drawShadowString(g, strPrice, Color.YELLOW, Color.BLACK, 10, 50);
 
         g.setColor(Color.GREEN);
-        g.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
+        g.setFont(baseFont.deriveFont(Font.BOLD, 16));
 
         if (price.getAsk() == Double.MAX_VALUE) {
             MappDraw.drawShadowString(g, "売り注文なし", Color.GREEN, Color.black, 4, 80);
         } else {
-            g.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
+            g.setFont(baseFont.deriveFont(Font.BOLD, 16));
             g.drawString("買:" + Util.INSTANCE.format(price.getAsk(), 0), 4, 80);
         }
 
@@ -167,5 +166,15 @@ public class PriceMap {
 
     }
 
-
+    private static void loadFont(Man10Market plugin) {
+        plugin.getLogger().info("フォントファイルの読み込み");
+        try {
+            File fontFile = new File(plugin.getDataFolder(),"font.ttf");
+            baseFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+        } catch (IOException e){
+            plugin.getLogger().warning("フォントファイル読み込みエラー" + e.getMessage());
+        } catch (FontFormatException e) {
+            plugin.getLogger().warning("フォントのフォーマットエラー" + e.getMessage());
+        }
+    }
 }
