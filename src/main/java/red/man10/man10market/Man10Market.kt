@@ -2,6 +2,7 @@ package red.man10.man10market
 
 import org.bukkit.plugin.java.JavaPlugin
 import red.man10.man10bank.BankAPI
+import red.man10.man10bank.service.VaultManager
 import red.man10.man10itembank.util.MySQLManager
 import red.man10.man10market.assistant.Assistant
 import red.man10.man10market.assistant.AssistantConfig
@@ -16,6 +17,7 @@ class Man10Market : JavaPlugin() {
     companion object {
         lateinit var instance: Man10Market
         lateinit var bankAPI: BankAPI
+        lateinit var vault: VaultManager
 
         var isMarketOpen = false
         var csvPath = ""
@@ -53,6 +55,7 @@ class Man10Market : JavaPlugin() {
 
         instance = this
         bankAPI = BankAPI(this)
+        vault = VaultManager(this)
 
         getCommand("mce")!!.setExecutor(Command)
         getCommand("mstock")!!.setExecutor(Stock)

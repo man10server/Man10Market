@@ -183,8 +183,7 @@ object Market {
     fun sendMarketBuy(uuid: UUID, item: String, lot: Int, sendInventory: Boolean = false) {
 
         transactionQueue.add {
-
-            val p = Bukkit.getPlayer(uuid)
+            val p = Bukkit.getPlayer(uuid) ?: return@add
 
             if (lot <= 0) {
                 msg(p, "§c§l最低注文個数は1個です")
@@ -216,15 +215,10 @@ object Market {
                 //このループで取引する数量
                 val tradeAmount = if (firstOrder.lot > remainAmount) remainAmount else firstOrder.lot
 
-                if (!Man10Bank.vault.withdraw(uuid,tradeAmount * firstOrder.price)){
+                if (!Man10Market.vault.withdraw(p,tradeAmount * firstOrder.price)){
                     msg(p, "§c§ld§n電子マネー§c§ldの残高が足りません！")
                     return@add
                 }
-
-//                if (!bankAPI.withdraw(uuid, tradeAmount * firstOrder.price, "Man10MarketBuy", "マーケット成行買い")) {
-//                    msg(p, "§c§l銀行の残高が足りません！")
-//                    return@add
-//                }
 
                 msg(p, "§e電子マネーから${format(tradeAmount*firstOrder.price)}円支払いました")
 
@@ -265,7 +259,7 @@ object Market {
 
         transactionQueue.add {
 
-            val p = Bukkit.getPlayer(uuid)
+            val p = Bukkit.getPlayer(uuid)?:return@add
 
             if (lot <= 0) {
                 msg(p, "§c§l最低注文個数は1個です")
@@ -318,9 +312,7 @@ object Market {
                     return@add
                 }
 
-//                bankAPI.deposit(uuid, tradeAmount * firstOrder.price, "Man10MarketSell", "マーケット成行売り")
-
-                Man10Bank.vault.deposit(uuid,tradeAmount * firstOrder.price)
+                Man10Market.vault.deposit(p,tradeAmount * firstOrder.price)
 
                 remainAmount -= tradeAmount
 
@@ -328,10 +320,8 @@ object Market {
                 msg(p, "§e電子マネーに${format(tradeAmount*firstOrder.price)}円追加されました")
                 syncRecordLog(uuid, item, tradeAmount, firstOrder.price, "成行売り")
                 syncLogTick(item, tradeAmount)
-
             }
         }
-
     }
 
     //指値
@@ -599,7 +589,6 @@ object Market {
                 e.stackTrace.forEach { Bukkit.getLogger().info("${it.className};${it.methodName};${it.lineNumber}") }
             }
         }
-
     }
 
     data class OrderData(
