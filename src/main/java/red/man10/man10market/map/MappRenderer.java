@@ -23,7 +23,7 @@ import org.bukkit.map.MinecraftFont;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-import red.man10.man10bank.VaultManager;
+import red.man10.man10bank.service.VaultManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

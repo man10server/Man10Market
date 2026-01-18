@@ -223,7 +223,7 @@ object Stock : CommandExecutor{
         var lastIssue : Date
     )
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 
 
         if (label!="mstock")return false
@@ -234,7 +234,7 @@ object Stock : CommandExecutor{
             return true
         }
 
-        if (args.isNullOrEmpty()){
+        if (args.isEmpty()){
             msg(sender,"/mstock issue <株式名> <発行数> : 資金調達のために株式を新規発行する(株主と要相談)")
             msg(sender,"/mstock pay <株式名> <一株あたりの配当額> : 株主に配当を支払う")
             msg(sender,"/mstock show <株式名> : 総発行株数などを確認する")
